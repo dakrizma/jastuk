@@ -17,8 +17,6 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_PATH, 'static'),
     )
 
-MEDIA_ROOT = os.path.join(PROJECT_PATH, 'static')
-
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -35,9 +33,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     )
 
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_PATH, 'templates'),
-    )
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -103,4 +98,5 @@ STATIC_ROOT = 'static'
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = 'http://127.0.0.1:8000/static/'
+MEDIA_ROOT = '/home/dakrizma/Projects/jastuk/jastuk/media/'
+MEDIA_URL = 'http://127.0.0.1:8000/media/'

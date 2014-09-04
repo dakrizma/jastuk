@@ -1,31 +1,82 @@
 # -*- coding: utf-8 -*-
 
-import os
 from django.db import models
+from django.contrib.auth.models import User
+from django.contrib import admin
 from PIL import Image as PImage
-from jastuk.settings import MEDIA_ROOT
 from django.core.files import File
 from os.path import join as pjoin
-from tempfile import NamedTemporaryFile
-from string import join
+from tempfile import *
+import os
 
-# from django.contrib.auth.models import User
-# from django.contrib import admin
+MEDIA_ROOT = '/home/dakrizma/Projects/jastuk/jastuk/media/'
+
+class Album(models.Model):
+	title = models.CharField(max_length=60)
+	public = models.BooleanField(default=False)
+	def __unicode__(self):
+		return self.title
+
+	def images(self):
+		lst = [x.image.name for x in self.image_set.all()]
+		lst = ["<a href='/media/%s'>%s</a>" % (x, x.split('/')[-1]) for x in lst]
+		return join(lst, ', ')
+	images.allow_tags = True
+
+class Tag(models.Model):
+	tag = models.CharField(max_length=50)
+	def __unicode__(self):
+		return self.tag
 
 class Image(models.Model):
 	title = models.CharField(max_length=60, blank=True, null=True)
 	image = models.FileField(upload_to="images/")
+	tags = models.ManyToManyField(Tag, blank=True)
+	albums = models.ManyToManyField(Album, blank=True)
+	created = models.DateTimeField(auto_now_add=True)
 	rating = models.IntegerField(default=50)
 	width = models.IntegerField(blank=True, null=True)
 	height = models.IntegerField(blank=True, null=True)
-	thumbnail = models.ImageField(upload_to="images/", blank=True, null=True)
+	user = models.ForeignKey(User, null=True, blank=True)
+
+	def __unicode__(self):
+		return self.image.name
+
+	def save(self, *args, **kwargs):
+		"""Save image dimensions."""
+		super(Image, self).save(*args, **kwargs)
+		im = PImage.open(os.path.join(MEDIA_ROOT, self.image.name))
+		self.width, self.height = im.size
+		super(Image, self).save(*args, ** kwargs)
+
+	def size(self):
+		"""Image size."""
+		return "%s x %s" % (self.width, self.height)
+
+	def __unicode__(self):
+		return self.image.name
+
+	def tags_(self):
+		lst = [x[1] for x in self.tags.values_list()]
+		return str(join(lst, ', '))
+
+	def albums_(self):
+		lst = [x[1] for x in self.albums.values_list()]
+		return str(join(lst, ', '))
+
+	def thumbnail(self):
+		return """<a href="/media/%s"><img border="0" alt="" src="/media/%s" height="40" /></a>""" % ((self.image.name, self.image.name))
+	thumbnail.allow_tags = True
+
 	thumbnail2 = models.ImageField(upload_to="images/", blank=True, null=True)
 
 	def save(self, *args, **kwargs):
+		"""Save image dimensions."""
 		super(Image, self).save(*args, **kwargs)
 		im = PImage.open(pjoin(MEDIA_ROOT, self.image.name))
 		self.width, self.height = im.size
 
+		# large thumbnail
 		fn, ext = os.path.splitext(self.image.name)
 		im.thumbnail((128,128), PImage.ANTIALIAS)
 		thumb_fn = fn + "-thumb2" + ext
@@ -34,6 +85,7 @@ class Image(models.Model):
 		self.thumbnail2.save(thumb_fn, File(open(tf2.name)), save=False)
 		tf2.close()
 
+		# small thumbnail
 		im.thumbnail((40,40), PImage.ANTIALIAS)
 		thumb_fn = fn + "-thumb" + ext
 		tf = NamedTemporaryFile()
@@ -41,21 +93,4 @@ class Image(models.Model):
 		self.thumbnail.save(thumb_fn, File(open(tf.name)), save=False)
 		tf.close()
 
-		super(Image, self).save(*args, **kwargs)
-
-	def thumbnail_(self):
-		return """<a href="/static/%s"><img border="0" alt="" src="/static/%s" /></a>""" % ((self.image.name, self.image.name))
-	thumbnail_.allow_tags = True
-
-	def __str__(self):
-		return self.image.name
-
-class Komentar(models.Model):
-	komentar = models.CharField(max_length=200, blank=True, null=True)
-	image = models.ForeignKey('Image')
-
-	def __str__(self):
-		return self.komentar
-
-	class Meta:
-		verbose_name_plural = 'komentari'
+		super(Image, self).save(*args, ** kwargs)
