@@ -6,10 +6,8 @@
         <!-- Albums  -->
         <ul>
             {% for slika in slike.object_list %}
-                <ul>
-                    <a href="{{ media_url }}{{ slika }}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
-                    <div class="title">{{ slika.title }} , {{ slika }}</div>
-                </ul>
+                <a href="{% url 'image' slika.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
+                <div class="title">{{ slika.title }} , {{ slika }}</div>
             {% endfor %}
         </ul>
 

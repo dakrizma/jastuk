@@ -15,7 +15,6 @@ from string import join
 class Image(models.Model):
 	title = models.CharField(max_length=60, blank=True, null=True)
 	image = models.FileField(upload_to="images/")
-	rating = models.IntegerField(default=50)
 	width = models.IntegerField(blank=True, null=True)
 	height = models.IntegerField(blank=True, null=True)
 	thumbnail = models.ImageField(upload_to="images/", blank=True, null=True)
@@ -59,3 +58,13 @@ class Komentar(models.Model):
 
 	class Meta:
 		verbose_name_plural = 'komentari'
+
+class Bodovi(models.Model):
+	bodovi = models.IntegerField(max_length=1, choices=[0, 1, 2, 3, 4, 5],)
+	image = models.ForeignKey('Image')
+
+	def __str__(self):
+		return self.bodovi
+
+	class Meta:
+		verbose_name_plural = 'bodovi'
