@@ -59,8 +59,10 @@ class Komentar(models.Model):
 	class Meta:
 		verbose_name_plural = 'komentari'
 
+ocjene = [(i, i) for i in range(6)]
+
 class Bodovi(models.Model):
-	bodovi = models.IntegerField(max_length=1, choices=[0, 1, 2, 3, 4, 5],)
+	bodovi = models.IntegerField(('bodovi'), max_length=1, choices=ocjene,)
 	image = models.ForeignKey('Image')
 
 	def __str__(self):
