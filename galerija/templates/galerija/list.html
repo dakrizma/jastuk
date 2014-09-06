@@ -2,12 +2,19 @@
 
 {% block content %}
     <div class="main">
-
+        <form action="{% url 'main' %}" method="post">
+            Sort:
+            <select name="sort">
+                <option value="ocjena" {% if prm.sort == "ocjena" %}selected{% endif %}>ocjena</option>
+                <option value="unos" {% if prm.sort == "unos" %}selected{% endif %}>unos</option>
+            </select>
+            <input type="submit" value="Apply" />
+        </form>
         <!-- Albums  -->
         <ul>
             {% for slika in slike.object_list %}
                 <a href="{% url 'image' slika.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
-                <div class="title">{{ slika.title }} , {{ slika }}</div>
+                <div class="title">{{ slika.title }}, {{ slika }}, ({{ slika.ocjena }})</div>
             {% endfor %}
         </ul>
 

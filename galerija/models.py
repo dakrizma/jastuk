@@ -17,6 +17,7 @@ class Image(models.Model):
 	image = models.FileField(upload_to="images/")
 	width = models.IntegerField(blank=True, null=True)
 	height = models.IntegerField(blank=True, null=True)
+	ocjena = models.FloatField(default=0)
 	thumbnail = models.ImageField(upload_to="images/", blank=True, null=True)
 	thumbnail2 = models.ImageField(upload_to="images/", blank=True, null=True)
 
@@ -62,11 +63,8 @@ class Komentar(models.Model):
 ocjene = [(i, i) for i in range(6)]
 
 class Bodovi(models.Model):
-	bodovi = models.IntegerField(('bodovi'), max_length=1, choices=ocjene,)
+	bodovi = models.IntegerField(('bodovi'), max_length=1, choices=ocjene)
 	image = models.ForeignKey('Image')
-
-	def __str__(self):
-		return self.bodovi
 
 	class Meta:
 		verbose_name_plural = 'bodovi'
