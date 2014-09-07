@@ -50,21 +50,12 @@ class Image(models.Model):
 	def __str__(self):
 		return self.image.name
 
-class Komentar(models.Model):
+ocjene = [(i, i) for i in range(6)]
+
+class Ocjene(models.Model):
+	ocjena = models.IntegerField(max_length=1, choices=ocjene)
 	komentar = models.CharField(max_length=200, blank=True, null=True)
 	image = models.ForeignKey('Image')
 
-	def __str__(self):
-		return self.komentar
-
 	class Meta:
-		verbose_name_plural = 'komentari'
-
-ocjene = [(i, i) for i in range(6)]
-
-class Bodovi(models.Model):
-	bodovi = models.IntegerField(('bodovi'), max_length=1, choices=ocjene)
-	image = models.ForeignKey('Image')
-
-	class Meta:
-		verbose_name_plural = 'bodovi'
+		verbose_name_plural = 'ocjene'
