@@ -51,10 +51,12 @@ def image(request, pk):
 	slika = Image.objects.get(pk=pk)
 	return render_to_response('galerija/image.html', dict(slika=slika, backurl=request.META["HTTP_REFERER"], media_url=MEDIA_URL))
 
-def izracun():
-	objects = Slike.objects.all()
-	br = len(objects)
-	i = 0
-	while (i<br):
+# def izracun():
+# 	objects = Slike.objects.all()
+# 	br = len(objects)
+# 	i = 0
+# 	while (i<br):
+# 		if (Ocjene.objects.all().image == Image.objects.all().name):
 
-	return rez
+
+# 	return rez

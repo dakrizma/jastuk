@@ -13,7 +13,7 @@ from string import join
 # from django.contrib import admin
 
 class Image(models.Model):
-	title = models.CharField(max_length=60, blank=True, null=True)
+	name = models.CharField(max_length=60, blank=True, null=True)
 	image = models.FileField(upload_to="images/")
 	width = models.IntegerField(blank=True, null=True)
 	height = models.IntegerField(blank=True, null=True)

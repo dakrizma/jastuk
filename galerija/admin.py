@@ -4,7 +4,7 @@ from django.contrib import admin
 from galerija.models import *
 
 class ImageAdmin(admin.ModelAdmin):
-	list_display = ('title', 'image', 'ocjena', 'thumbnail', 'thumbnail2', 'width', 'height')
+	list_display = ('name', 'image', 'ocjena', 'thumbnail', 'thumbnail2', 'width', 'height')
 
 class OcjeneAdmin(admin.ModelAdmin):
 	list_display = ('komentar', 'ocjena', 'image')

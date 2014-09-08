@@ -14,7 +14,7 @@
 		<ul>
 			{% for slika in slike.object_list %}
 				<a href="{% url 'image' slika.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
-				<div class="title">{{ slika.title }}, {{ slika }}, ({{ slika.ocjena }})</div>
+				<div class="title">{{ slika.name }}, {{ slika }}, ({{ slika.ocjena }})</div>
 			{% endfor %}
 		</ul>
 
