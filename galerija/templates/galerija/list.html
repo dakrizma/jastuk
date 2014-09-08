@@ -10,11 +10,18 @@
 			</select>
 			<input type="submit" value="Apply" />
 		</form>
+
+		<ul>
+			{% for ocjen in ocjena %}
+				<div>{{ ocjen.image }}, {{ ocjen.ocjena }}</div>
+			{% endfor %}
+		</ul>
 		<!-- Albums  -->
+	
 		<ul>
 			{% for slika in slike.object_list %}
 				<a href="{% url 'image' slika.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
-				<div class="title">{{ slika.name }}, {{ slika }}, ({{ slika.ocjena }})</div>
+				<div class="title">{{ slika.name }}, {{ slika.pk }}, ({{ slika.ocjena }})</div>
 			{% endfor %}
 		</ul>
 

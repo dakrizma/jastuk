@@ -6,12 +6,18 @@
         <a href="{{ backurl }}">&lt;&lt; back</a>
         <!-- Image -->
         <ul>
-            {% if slika.title %}
-                <div class="title">{{ slika.title }}</div>
+            {% if slika.name %}
+                <div class="title">{{ slika.name }}</div>
             {% endif %}
         
             <ul>
                 <img border="0" alt="" src="{{ media_url }}{{ slika.image.name }}" width="600" />
+                <form action="{% url 'image' slika.pk %}" method="post">{% csrf_token %}
+                <ul>
+                    {{ form.as_ul }}
+                </ul>
+                <input type="submit" value="Izračunaj" />
+            </form>
             </ul>
         </ul>
 

@@ -55,7 +55,7 @@ ocjene = [(i, i) for i in range(6)]
 class Ocjene(models.Model):
 	ocjena = models.IntegerField(max_length=1, choices=ocjene)
 	komentar = models.CharField(max_length=200, blank=True, null=True)
-	image = models.ForeignKey('Image')
+	image = models.ForeignKey(Image)
 
 	class Meta:
 		verbose_name_plural = 'ocjene'
