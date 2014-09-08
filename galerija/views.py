@@ -1,14 +1,14 @@
 # # -*- coding: utf-8 -*-
 
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, render
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.forms import ModelForm
 from jastuk.settings import MEDIA_URL
-from galerija.models import *
-from galerija.forms import *
+from galerija.models import Ocjene, Image
+from galerija.forms import OcjeneForm
 
 def main(request):
 	slike = Image.objects.all()
@@ -49,18 +49,20 @@ def main(request):
 	return render_to_response('galerija/list.html', d)
 
 def image(request, pk):
-	prim = Image.objects.get(pk=pk)
-	slika = Image.objects.all()[prim]
-	ocjena = Ocjene.objects.all()
+	slika = Image.objects.get(pk=pk)
 
 	if request.method == 'POST':
 		form = OcjeneForm(request.POST)
 		if form.is_valid():
 			komentar = form.cleaned_data['komentar']
 			ocjena2 = form.cleaned_data['ocjena']
-			form.save()
-			izracun(ocjena, slika)
-			return render_to_response('galerija/image.html', dict(slika=prim, backurl=request.META["HTTP_REFERER"], media_url=MEDIA_URL))
+			obj = form.save(commit=False)
+			obj.image = slika
+			obj.save()
+			ocjena = Ocjene.objects.all()
+			rez, suma, brojac = izracun(ocjena, slika)
+			slika.ocjena = rez
+			return render(request, 'galerija/image.html', {'slika': slika, 'brojac': brojac, 'rez': rez, 'suma': suma, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL})
 
 			# k = 0
 			# objects = Racun.objects.all()
@@ -79,18 +81,20 @@ def image(request, pk):
 			# return render(request, 'tarife/izracun.html', {'rez': rez, 'rez_mjesec': rez_mjesec})
 	else:
 		form = OcjeneForm()
-	return render_to_response('galerija/image.html', dict(slika=prim, backurl=request.META["HTTP_REFERER"], media_url=MEDIA_URL))
+	return render(request, 'galerija/image.html', {'slika': slika, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'form': form})
 
 
 
 def izracun(ocjena, slika):
 	br = len(ocjena)
-	brojac = suma = i = 0
+	brojac = suma = 0.0
+	i = 0
 	while (i < br):
-		if (ocjena[i].image == slika.image):
+		if (ocjena[i].image == slika):
 			if ocjena[i].ocjena != 0:
 				brojac += 1
 			suma = suma + ocjena[i].ocjena
 		i += 1
 	if suma != 0:
 		slika.ocjena = suma / brojac
+	return (slika.ocjena, suma, brojac)

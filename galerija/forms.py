@@ -7,9 +7,10 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class OcjeneForm(ModelForm):
-    class Meta:
-        model = Ocjene
-        labels = {
+	class Meta:
+		model = Ocjene
+		labels = {
 			'komentar': _(u'Komentar'),
 			'ocjena': _('Ocjena slike'),
 			}
+		exclude = ('image',)

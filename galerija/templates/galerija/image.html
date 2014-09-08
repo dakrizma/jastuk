@@ -7,9 +7,9 @@
         <!-- Image -->
         <ul>
             {% if slika.name %}
-                <div class="title">{{ slika.name }}</div>
+                <div class="title">{{ slika.name }}, {{ slika }}, {{ slika.ocjena }} --- {{ suma }} --- {{ rez }} --- {{ brojac }}</div>
             {% endif %}
-        
+
             <ul>
                 <img border="0" alt="" src="{{ media_url }}{{ slika.image.name }}" width="600" />
                 <form action="{% url 'image' slika.pk %}" method="post">{% csrf_token %}
