@@ -7,43 +7,48 @@ from django.core.context_processors import csrf
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.forms import ModelForm
 from jastuk.settings import MEDIA_URL
-from galerija.models import Ocjene, Image
-from galerija.forms import OcjeneForm
+from galerija.models import *
+from galerija.forms import ImageForm, OcjeneForm
 
 def main(request):
 	slike = Image.objects.all()
-
-	form = request.POST
-	parameters = {}
-	parameters["sort"] = []
-
-	# create dictionary of properties for each image and a dict of search/filter parameters
-	for k, v in form.items():
-		if k in parameters:
-			parameters[k] = v
-
 	try: page = int(request.GET.get("page", '1'))
 	except ValueError: page = 1
-	# save or restore parameters from session
-	if page != 1 and "parameters" in request.session:
-		parameters = request.session["parameters"]
-	else:
-		request.session["parameters"] = parameters
-
-	sort = ''
-	if parameters["sort"]:
-		sort = parameters["sort"]
-	if sort == "ocjena":
-		slike = Image.objects.order_by('-ocjena')
-	else:
-		slike = Image.objects.all()
-
 	paginator = Paginator(slike, 6)
 	try:
 		slike = paginator.page(page)
 	except (InvalidPage, EmptyPage):
 		request = paginator.page(paginator.num_pages)
+	parameters = {}
+	parameters["sort"] = []
 
+	if request.method == 'POST':
+		if request.POST['action'] == 'Upload':
+			uploadform = ImageForm(request.POST)
+			if uploadform.is_valid():
+				name = form.cleanes_data['name']
+				uploadform.save()
+		elif request.POST['action'] == 'Apply':	
+			applyform = request.POST
+			if applyform.is_valid():
+				# create dictionary of properties for each image and a dict of search/filter parameters
+				for k, v in applyform.items():
+					if k in parameters:
+						parameters[k] = v
+			
+				# save or restore parameters from session
+				if page != 1 and "parameters" in request.session:
+					parameters = request.session["parameters"]
+				else:
+					request.session["parameters"] = parameters
+			
+				sort = ''
+				if parameters["sort"]:
+					sort = parameters["sort"]
+				if sort == "ocjena":
+					slike = Image.objects.order_by('-ocjena')
+				else:
+					slike = Image.objects.all()
 	d = dict(slike=slike, prm=parameters, media_url=MEDIA_URL)
 	d.update(csrf(request))
 	return render_to_response('galerija/list.html', d)
@@ -62,7 +67,7 @@ def image(request, pk):
 			ocjena = Ocjene.objects.all()
 			rez, suma, brojac = izracun(ocjena, slika)
 			slika.ocjena = rez
-			return render(request, 'galerija/image.html', {'slika': slika, 'brojac': brojac, 'rez': rez, 'suma': suma, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL})
+			return render(request, 'galerija/image.html', {'slika': slika, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL})
 
 			# k = 0
 			# objects = Racun.objects.all()

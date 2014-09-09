@@ -1,30 +1,32 @@
 {% extends "pbase.html" %}
-
 {% block content %}
 	<div class="main">
-		<form action="{% url 'main' %}" method="post">{% csrf_token %}
-			Sort:
-			<select name="sort">
-				<option value="ocjena" {% if prm.sort == "ocjena" %}selected{% endif %}>ocjena</option>
-				<option value="unos" {% if prm.sort == "unos" %}selected{% endif %}>unos</option>
-			</select>
-			<input type="submit" value="Apply" />
-		</form>
-
-		<ul>
-			{% for ocjen in ocjena %}
-				<div>{{ ocjen.image }}, {{ ocjen.ocjena }}</div>
-			{% endfor %}
-		</ul>
+        <form action="{% url 'main' %}" method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="action" value="Upload">
+            <input type="submit" value="Upload" />
+        </form>
+        <form action="{% url 'main' %}" method="post">{% csrf_token %}
+            Sort:
+            <select name="sort">
+                <option value="ocjena" {% if prm.sort == "ocjena" %}selected{% endif %}>ocjena</option>
+                <option value="unos" {% if prm.sort == "unos" %}selected{% endif %}>unos</option>
+            </select>
+            <input type="hidden" name="action" value="Apply">
+            <input type="submit" value="Apply" />
+        </form>
+        <ul>
+            {% for ocjen in ocjena %}
+                <div>{{ ocjen.image }}, {{ ocjen.ocjena }}</div>
+            {% endfor %}
+        </ul>
 		<!-- Albums  -->
-	
 		<ul>
 			{% for slika in slike.object_list %}
 				<a href="{% url 'image' slika.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
 				<div class="title">{{ slika.name }}, {{ slika.pk }}, ({{ slika.ocjena }})</div>
 			{% endfor %}
 		</ul>
-
 		<!-- Next/Prev page links  -->
 		{% if slike.object_list and slike.paginator.num_pages > 1 %}
 		<div class="pagination">
@@ -43,7 +45,5 @@
 			</span>
 		</div>
 		{% endif %}
-
 	</div>
-
 {% endblock %}
