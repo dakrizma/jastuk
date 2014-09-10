@@ -8,7 +8,8 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.forms import ModelForm
 from jastuk.settings import MEDIA_URL
 from galerija.models import *
-from galerija.forms import ImageForm, OcjeneForm
+from galerija.forms import *
+from django.core.urlresolvers import reverse
 
 def main(request):
 	slike = Image.objects.all()
@@ -21,37 +22,33 @@ def main(request):
 		request = paginator.page(paginator.num_pages)
 	parameters = {}
 	parameters["sort"] = []
-
 	if request.method == 'POST':
 		if request.POST['action'] == 'Upload':
-			uploadform = ImageForm(request.POST)
-			if uploadform.is_valid():
-				name = form.cleanes_data['name']
-				uploadform.save()
-		elif request.POST['action'] == 'Apply':	
-			applyform = request.POST
-			if applyform.is_valid():
-				# create dictionary of properties for each image and a dict of search/filter parameters
-				for k, v in applyform.items():
-					if k in parameters:
-						parameters[k] = v
-			
-				# save or restore parameters from session
-				if page != 1 and "parameters" in request.session:
-					parameters = request.session["parameters"]
-				else:
-					request.session["parameters"] = parameters
-			
-				sort = ''
-				if parameters["sort"]:
-					sort = parameters["sort"]
-				if sort == "ocjena":
-					slike = Image.objects.order_by('-ocjena')
-				else:
-					slike = Image.objects.all()
-	d = dict(slike=slike, prm=parameters, media_url=MEDIA_URL)
-	d.update(csrf(request))
-	return render_to_response('galerija/list.html', d)
+			form = ImageForm(request.POST, request.FILES)
+			if form.is_valid():
+				form.save()
+				return HttpResponseRedirect(reverse('main'))
+		elif request.POST['action'] == 'Apply':
+			form = request.POST
+			# create dictionary of properties for each image and a dict of search/filter parameters
+			for k, v in form.items():
+				if k in parameters:
+					parameters[k] = v
+			# save or restore parameters from session
+			if page != 1 and "parameters" in request.session:
+				parameters = request.session["parameters"]
+			else:
+				request.session["parameters"] = parameters
+			sort = ''
+			if parameters["sort"]:
+				sort = parameters["sort"]
+			if sort == "ocjena":
+				slike = Image.objects.order_by('-ocjena')
+			else:
+				slike = Image.objects.all()
+	form = ImageForm()
+	return render(request,'galerija/list.html',{'slike': slike, 'prm': parameters, 'media_url': MEDIA_URL, 'form': form})
+
 
 def image(request, pk):
 	slika = Image.objects.get(pk=pk)

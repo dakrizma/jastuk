@@ -18,8 +18,5 @@ class OcjeneForm(ModelForm):
 class ImageForm(ModelForm):
 	class Meta:
 		model = Image
-		labels = {
-			'name': _(u'name'),
-			'image': _(u'image'),
-			}
+		field = ('image', 'name')
 		exclude = ('width', 'height', 'ocjena', 'thumbnail', 'thumbnail2')
