@@ -1,26 +1,31 @@
 {% extends "pbase.html" %}
 {% block content %}
 	<div class="main">
-		<form action="{% url 'main' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-			{{form}}
-			<input type="hidden" name="action" value="Upload">
-			<input type="submit" value="Upload" />
-		</form>
+{% comment %}
+    
+        <form action="{% url 'main' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{uploadform}}
+            <input type="hidden" name="action" value="Upload">
+            <input type="submit" value="Upload" />
+        </form>
+{% endcomment %}
+        <form action="{% url 'main' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{applyform}}
+            <input type="hidden" name="action" value="Apply">
+            <input type="submit" value="Apply" />
+        </form>
+{% comment %}
+        <form action="{% url 'main' %}" method="post">{% csrf_token %}
+            Sort2:
+            <select name="sort">
+                <option value="ocjena" {% if prm.sort == "ocjena" %}selected{% endif %}>ocjena</option>
+                <option value="unos" {% if prm.sort == "unos" %}selected{% endif %}>unos</option>
+            </select>
+            <input type="hidden" name="action" value="Apply">
+            <input type="submit" value="Apply" />
+        </form>
+{% endcomment %}
 
-		<form action="{% url 'main' %}" name="ApplyForm" method="post">{% csrf_token %}
-			Sort:
-			<select name="sort">
-				<option value="ocjena" {% if prm.sort == "ocjena" %}selected{% endif %}>ocjena</option>
-				<option value="unos" {% if prm.sort == "unos" %}selected{% endif %}>unos</option>
-			</select>
-			<input type="hidden" name="action" value="Apply">
-			<input type="submit" value="Apply" />
-		</form>
-		<ul>
-			{% for ocjen in ocjena %}
-				<div>{{ ocjen.image }}, {{ ocjen.ocjena }}</div>
-			{% endfor %}
-		</ul>
 		<!-- Albums  -->
 		<ul>
 			{% for slika in slike.object_list %}

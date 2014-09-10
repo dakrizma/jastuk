@@ -20,34 +20,42 @@ def main(request):
 		slike = paginator.page(page)
 	except (InvalidPage, EmptyPage):
 		request = paginator.page(paginator.num_pages)
-	parameters = {}
-	parameters["sort"] = []
+	# parameters = {}
+	# parameters["sort"] = []
 	if request.method == 'POST':
-		if request.POST['action'] == 'Upload':
-			form = ImageForm(request.POST, request.FILES)
-			if form.is_valid():
-				form.save()
-				return HttpResponseRedirect(reverse('main'))
-		elif request.POST['action'] == 'Apply':
-			form = request.POST
-			# create dictionary of properties for each image and a dict of search/filter parameters
-			for k, v in form.items():
-				if k in parameters:
-					parameters[k] = v
-			# save or restore parameters from session
-			if page != 1 and "parameters" in request.session:
-				parameters = request.session["parameters"]
-			else:
-				request.session["parameters"] = parameters
-			sort = ''
-			if parameters["sort"]:
-				sort = parameters["sort"]
-			if sort == "ocjena":
+		# if request.POST['action'] == 'Upload':
+		# 	uploadform = ImageForm(request.POST, request.FILES)
+		# 	if uploadform.is_valid():
+		# 		uploadform.save()
+		# 		return HttpResponseRedirect(reverse('main'))
+		# elif request.POST['action'] == 'Apply':
+		applyform = SortForm(request.POST)
+		if applyform.is_valid():
+			parameters = applyform.cleaned_data['sort']
+		# form = request.POST
+		# # create dictionary of properties for each image and a dict of search/filter parameters
+		# for k, v in form.items():
+		# 	if k in parameters:
+		# 		parameters[k] = v
+		# # save or restore parameters from session
+		# if page != 1 and "parameters" in request.session:
+		# 	parameters = request.session["parameters"]
+		# else:
+		# 	request.session["parameters"] = parameters
+		# sort = ''
+		# if parameters["sort"]:
+		# 	sort = parameters["sort"]
+		# if sort == "ocjena":
+		# 	slike = Image.objects.order_by('-ocjena')
+		# else:
+		# 	slike = Image.objects.all()
+			if parameters == "ocjena":
 				slike = Image.objects.order_by('-ocjena')
 			else:
 				slike = Image.objects.all()
-	form = ImageForm()
-	return render(request,'galerija/list.html',{'slike': slike, 'prm': parameters, 'media_url': MEDIA_URL, 'form': form})
+	# uploadform = ImageForm()
+	applyform = SortForm()
+	return render(request, 'galerija/list.html', {'slike': slike, 'media_url': MEDIA_URL, 'applyform': applyform})
 
 
 def image(request, pk):

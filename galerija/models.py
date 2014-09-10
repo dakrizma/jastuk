@@ -9,9 +9,6 @@ from os.path import join as pjoin
 from tempfile import NamedTemporaryFile
 from string import join
 
-# from django.contrib.auth.models import User
-# from django.contrib import admin
-
 class Image(models.Model):
 	name = models.CharField(max_length=60, blank=True, null=True)
 	image = models.FileField(upload_to="images/")

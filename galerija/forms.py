@@ -2,7 +2,7 @@
 
 from django import forms
 from django.forms import ModelForm
-from galerija.models import Ocjene, Image
+from galerija.models import *
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -20,3 +20,12 @@ class ImageForm(ModelForm):
 		model = Image
 		field = ('image', 'name')
 		exclude = ('width', 'height', 'ocjena', 'thumbnail', 'thumbnail2')
+
+izbor = (
+	('ocjena', 'ocjena'),
+	('unos', 'unos'),
+	)
+
+class SortForm(forms.Form):
+	sort = forms.ChoiceField(choices=izbor)
+
