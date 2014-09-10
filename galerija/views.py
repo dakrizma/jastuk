@@ -34,14 +34,14 @@ def main(request):
 			parameters = applyform.cleaned_data['sort']
 		# form = request.POST
 		# # create dictionary of properties for each image and a dict of search/filter parameters
-		# for k, v in form.items():
-		# 	if k in parameters:
-		# 		parameters[k] = v
-		# # save or restore parameters from session
-		# if page != 1 and "parameters" in request.session:
-		# 	parameters = request.session["parameters"]
-		# else:
-		# 	request.session["parameters"] = parameters
+			# for k, v in applyform.items():
+			# 	if k in parameters:
+			# 		parameters[k] = v
+			# # save or restore parameters from session
+			# if page != 1 and "parameters" in request.session:
+			# 	parameters = request.session["parameters"]
+			# else:
+			# 	request.session["parameters"] = parameters
 		# sort = ''
 		# if parameters["sort"]:
 		# 	sort = parameters["sort"]
