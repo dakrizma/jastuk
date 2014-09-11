@@ -13,87 +13,54 @@ from django.core.urlresolvers import reverse
 
 def main(request):
 	slike = Image.objects.all()
+	parameters = []
 	try: page = int(request.GET.get("page", '1'))
 	except ValueError: page = 1
+	if request.method == 'POST':
+		if request.POST['action'] == 'Upload':
+			uploadform = ImageForm(request.POST, request.FILES)
+			if uploadform.is_valid():
+				uploadform.save()
+				return HttpResponseRedirect(reverse('main'))
+		elif request.POST['action'] == 'Apply':
+			applyform = SortForm(request.POST)
+			if applyform.is_valid():
+				parameters = applyform.cleaned_data['sort']
+	if page != 1 and "parameters" in request.session:
+		parameters = request.session["parameters"]
+	else:
+		request.session["parameters"] = parameters
+	if parameters == "ocjena":
+		slike = Image.objects.order_by('-ocjena')
+	else:
+		slike = Image.objects.all()
 	paginator = Paginator(slike, 6)
 	try:
 		slike = paginator.page(page)
 	except (InvalidPage, EmptyPage):
 		request = paginator.page(paginator.num_pages)
-	# parameters = {}
-	# parameters["sort"] = []
-	if request.method == 'POST':
-		# if request.POST['action'] == 'Upload':
-		# 	uploadform = ImageForm(request.POST, request.FILES)
-		# 	if uploadform.is_valid():
-		# 		uploadform.save()
-		# 		return HttpResponseRedirect(reverse('main'))
-		# elif request.POST['action'] == 'Apply':
-		applyform = SortForm(request.POST)
-		if applyform.is_valid():
-			parameters = applyform.cleaned_data['sort']
-		# form = request.POST
-		# # create dictionary of properties for each image and a dict of search/filter parameters
-			# for k, v in applyform.items():
-			# 	if k in parameters:
-			# 		parameters[k] = v
-			# # save or restore parameters from session
-			# if page != 1 and "parameters" in request.session:
-			# 	parameters = request.session["parameters"]
-			# else:
-			# 	request.session["parameters"] = parameters
-		# sort = ''
-		# if parameters["sort"]:
-		# 	sort = parameters["sort"]
-		# if sort == "ocjena":
-		# 	slike = Image.objects.order_by('-ocjena')
-		# else:
-		# 	slike = Image.objects.all()
-			if parameters == "ocjena":
-				slike = Image.objects.order_by('-ocjena')
-			else:
-				slike = Image.objects.all()
-	# uploadform = ImageForm()
+	uploadform = ImageForm()
 	applyform = SortForm()
-	return render(request, 'galerija/list.html', {'slike': slike, 'media_url': MEDIA_URL, 'applyform': applyform})
+	return render(request, 'galerija/list.html', {'slike': slike, 'media_url': MEDIA_URL, 'uploadform': ImageForm, 'applyform': applyform})
 
 
 def image(request, pk):
 	slika = Image.objects.get(pk=pk)
-
+	ocjene = Ocjene.objects.filter(image=slika).order_by('-id')
+	zadnje = ocjene[:5]
 	if request.method == 'POST':
 		form = OcjeneForm(request.POST)
 		if form.is_valid():
-			komentar = form.cleaned_data['komentar']
-			ocjena2 = form.cleaned_data['ocjena']
 			obj = form.save(commit=False)
 			obj.image = slika
 			obj.save()
-			ocjena = Ocjene.objects.all()
-			rez, suma, brojac = izracun(ocjena, slika)
-			slika.ocjena = rez
-			return render(request, 'galerija/image.html', {'slika': slika, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL})
-
-			# k = 0
-			# objects = Racun.objects.all()
-			# br = len(objects)
-			# while (k < br):
-			# 	if (mjesec == objects[k].mjesec) and (godina == objects[k].godina) and (request.user == objects[k].korisnik):
-			# 		greska = 'Unijeli ste podatke za taj mjesec. Za brisanje računa kliknite na \'brisanje računa\' ili nastavite sa unosom novog računa'
-			# 		form = RacunForm()
-			# 		return render(request, 'tarife/index.html', {'form': form, 'greska': greska})
-			# 	k += 1
-			# racun = form.save(commit=False)
-			# racun.korisnik = request.user
-			# racun.save()
-			# korisnik = request.user
-			# rez, rez_mjesec = izlaz(korisnik)
-			# return render(request, 'tarife/izracun.html', {'rez': rez, 'rez_mjesec': rez_mjesec})
-	else:
-		form = OcjeneForm()
-	return render(request, 'galerija/image.html', {'slika': slika, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'form': form})
-
-
+			ocjene = Ocjene.objects.filter(image=slika).order_by('-id')
+			zadnje = ocjene[:5]
+			izracun(ocjene, slika)
+			form = OcjeneForm()
+			return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'form': form})
+	form = OcjeneForm()
+	return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'form': form})
 
 def izracun(ocjena, slika):
 	br = len(ocjena)
@@ -107,4 +74,4 @@ def izracun(ocjena, slika):
 		i += 1
 	if suma != 0:
 		slika.ocjena = suma / brojac
-	return (slika.ocjena, suma, brojac)
+		slika.save()

@@ -28,4 +28,3 @@ izbor = (
 
 class SortForm(forms.Form):
 	sort = forms.ChoiceField(choices=izbor)
-

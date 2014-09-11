@@ -14,7 +14,7 @@ class Image(models.Model):
 	image = models.FileField(upload_to="images/")
 	width = models.IntegerField(blank=True, null=True)
 	height = models.IntegerField(blank=True, null=True)
-	ocjena = models.FloatField(default = 0.0)
+	ocjena = models.DecimalField(default=0.0, max_digits=5, decimal_places=2)
 	thumbnail = models.ImageField(upload_to="images/", blank=True, null=True)
 	thumbnail2 = models.ImageField(upload_to="images/", blank=True, null=True)
 

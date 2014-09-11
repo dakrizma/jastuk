@@ -1,39 +1,25 @@
 {% extends "pbase.html" %}
 {% block content %}
 	<div class="main">
-{% comment %}
-    
+
         <form action="{% url 'main' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
             {{uploadform}}
             <input type="hidden" name="action" value="Upload">
             <input type="submit" value="Upload" />
         </form>
-{% endcomment %}
+        {{ prm }}
+        <br />
         <form action="{% url 'main' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
             {{applyform}}
             <input type="hidden" name="action" value="Apply">
             <input type="submit" value="Apply" />
         </form>
-{% comment %}
-        <form action="{% url 'main' %}" method="post">{% csrf_token %}
-            Sort2:
-            <select name="sort">
-                <option value="ocjena" {% if prm.sort == "ocjena" %}selected{% endif %}>ocjena</option>
-                <option value="unos" {% if prm.sort == "unos" %}selected{% endif %}>unos</option>
-            </select>
-            <input type="hidden" name="action" value="Apply">
-            <input type="submit" value="Apply" />
-        </form>
-{% endcomment %}
-
-		<!-- Albums  -->
 		<ul>
-			{% for slika in slike.object_list %}
+			{% for slika in slike %}
 				<a href="{% url 'image' slika.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
-				<div class="title">{{ slika.name }}, {{ slika }}---{{ slika.pk }}, ({{ slika.ocjena }})</div>
+				<div class="title">{{ slika.name }} ({{ slika.ocjena }})</div>
 			{% endfor %}
 		</ul>
-		<!-- Next/Prev page links  -->
 		{% if slike.object_list and slike.paginator.num_pages > 1 %}
 		<div class="pagination">
 			<span class="step-links">
