@@ -15,9 +15,9 @@
             <input type="submit" value="Apply" />
         </form>
 		<ul>
-			{% for slika in slike %}
-				<a href="{% url 'image' slika.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slika.thumbnail2.name }}" /></a>
-				<div class="title">{{ slika.name }} ({{ slika.ocjena }})</div>
+			{% for slik in slike %}
+				<a href="{% url 'image' slik.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slik.thumbnail.name }}" /></a>
+				<div class="title">{{ slik.name }} ({{ slik.ocjena }})</div>
 			{% endfor %}
 		</ul>
 		{% if slike.object_list and slike.paginator.num_pages > 1 %}

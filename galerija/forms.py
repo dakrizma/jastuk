@@ -13,13 +13,13 @@ class OcjeneForm(ModelForm):
 			'komentar': _(u'Komentar'),
 			'ocjena': _('Ocjena slike'),
 			}
-		exclude = ('image',)
+		exclude = ('slika',)
 
-class ImageForm(ModelForm):
+class SlikaForm(ModelForm):
 	class Meta:
-		model = Image
+		model = Slika
 		field = ('image', 'name')
-		exclude = ('width', 'height', 'ocjena', 'thumbnail', 'thumbnail2')
+		exclude = ('width', 'height', 'ocjena', 'thumbnail')
 
 izbor = (
 	('ocjena', 'ocjena'),
@@ -28,3 +28,7 @@ izbor = (
 
 class SortForm(forms.Form):
 	sort = forms.ChoiceField(choices=izbor)
+
+class ResizeForm(forms.Form):
+	visina = forms.IntegerField(label=u'Visina', min_value=1)
+	sirina = forms.IntegerField(label=u'Širina', min_value=1)

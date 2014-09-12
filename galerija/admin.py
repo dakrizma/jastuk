@@ -3,12 +3,12 @@
 from django.contrib import admin
 from galerija.models import *
 
-class ImageAdmin(admin.ModelAdmin):
-	list_display = ('name', 'image', 'ocjena', 'thumbnail', 'thumbnail2', 'width', 'height')
+class SlikaAdmin(admin.ModelAdmin):
+	list_display = ('name', 'image', 'ocjena', 'thumbnail', 'width', 'height')
 
 class OcjeneAdmin(admin.ModelAdmin):
-	list_display = ('komentar', 'ocjena', 'image')
-	list_filter = ('image',)
+	list_display = ('komentar', 'ocjena', 'slika')
+	list_filter = ('slika',)
 
-admin.site.register(Image, ImageAdmin)
+admin.site.register(Slika, SlikaAdmin)
 admin.site.register(Ocjene, OcjeneAdmin)

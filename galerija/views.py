@@ -6,19 +6,22 @@ from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.forms import ModelForm
-from jastuk.settings import MEDIA_URL
+from jastuk.settings import MEDIA_URL, MEDIA_ROOT
 from galerija.models import *
 from galerija.forms import *
 from django.core.urlresolvers import reverse
+from PIL import Image
+from os.path import join
+
 
 def main(request):
-	slike = Image.objects.all()
+	slike = Slika.objects.all()
 	parameters = []
 	try: page = int(request.GET.get("page", '1'))
 	except ValueError: page = 1
 	if request.method == 'POST':
 		if request.POST['action'] == 'Upload':
-			uploadform = ImageForm(request.POST, request.FILES)
+			uploadform = SlikaForm(request.POST, request.FILES)
 			if uploadform.is_valid():
 				uploadform.save()
 				return HttpResponseRedirect(reverse('main'))
@@ -31,43 +34,73 @@ def main(request):
 	else:
 		request.session["parameters"] = parameters
 	if parameters == "ocjena":
-		slike = Image.objects.order_by('-ocjena')
+		slike = Slika.objects.order_by('-ocjena')
 	else:
-		slike = Image.objects.all()
+		slike = Slika.objects.all()
 	paginator = Paginator(slike, 6)
 	try:
 		slike = paginator.page(page)
 	except (InvalidPage, EmptyPage):
 		request = paginator.page(paginator.num_pages)
-	uploadform = ImageForm()
+	uploadform = SlikaForm()
 	applyform = SortForm()
-	return render(request, 'galerija/list.html', {'slike': slike, 'media_url': MEDIA_URL, 'uploadform': ImageForm, 'applyform': applyform})
+	return render(request, 'galerija/list.html', {'slike': slike, 'media_url': MEDIA_URL, 'uploadform': uploadform, 'applyform': applyform})
 
 
 def image(request, pk):
-	slika = Image.objects.get(pk=pk)
-	ocjene = Ocjene.objects.filter(image=slika).order_by('-id')
+	slika = Slika.objects.get(pk=pk)
+	ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
 	zadnje = ocjene[:5]
 	if request.method == 'POST':
-		form = OcjeneForm(request.POST)
-		if form.is_valid():
-			obj = form.save(commit=False)
-			obj.image = slika
-			obj.save()
-			ocjene = Ocjene.objects.filter(image=slika).order_by('-id')
-			zadnje = ocjene[:5]
-			izracun(ocjene, slika)
-			form = OcjeneForm()
-			return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'form': form})
-	form = OcjeneForm()
-	return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'form': form})
+		if request.POST['action'] == 'Izracunaj':
+			ocjeneform = OcjeneForm(request.POST)
+			if ocjeneform.is_valid():
+				obj = ocjeneform.save(commit=False)
+				obj.slika = slika
+				obj.save()
+				ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
+				zadnje = ocjene[:5]
+				izracun(ocjene, slika)
+				ocjeneform = OcjeneForm()
+				resizeform = ResizeForm()
+				return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'ocjeneform': ocjeneform, 'resizeform': resizeform})
+		if request.POST['action'] == 'Resize':
+			resizeform = ResizeForm(request.POST)
+			if resizeform.is_valid():
+				sirina = int(resizeform.cleaned_data['sirina'])
+				visina = int(resizeform.cleaned_data['visina'])
+
+				pic = Image.open(join(MEDIA_ROOT, slika.image.name))
+				if pic.mode not in ("L", "RGB"):
+					pic = pic.convert("RGB")
+				aspect_ratio = sirina / float(visina)
+				large_size = (slika.width, slika.height)
+				new_height = int(large_size[0] / aspect_ratio)
+				if new_height < slika.height:
+				    final_width = large_size[0]
+				    final_height = new_height
+				else:
+				    final_width = int(aspect_ratio * large_size[1])
+				    final_height = large_size[1]
+
+				imaged = pic.resize((final_width, final_height), Image.ANTIALIAS)
+
+				imaged.show()
+				imaged.save(join(MEDIA_ROOT, "images/slikica.jpg"), quality=90)
+
+				resizeform = ResizeForm()
+				ocjeneform = OcjeneForm()
+				return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'resizeform': resizeform, 'ocjeneform': ocjeneform})
+	ocjeneform = OcjeneForm()
+	resizeform = ResizeForm()
+	return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'ocjeneform': ocjeneform, 'resizeform': resizeform})
 
 def izracun(ocjena, slika):
 	br = len(ocjena)
 	brojac = suma = 0.0
 	i = 0
 	while (i < br):
-		if (ocjena[i].image == slika):
+		if (ocjena[i].slika == slika):
 			if ocjena[i].ocjena != 0:
 				brojac += 1
 			suma = suma + ocjena[i].ocjena

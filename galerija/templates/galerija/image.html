@@ -19,11 +19,15 @@
                 {% for zadnji in zadnje %}
                     <div>{{ zadnji.ocjena }}</div>
                 {% endfor %}
-                <form action="{% url 'image' slika.pk %}" method="post">{% csrf_token %}
-                    <ul>
-                        {{ form.as_ul }}
-                    </ul>
+                <form action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {{ ocjeneform }}
+                    <input type="hidden" name="action" value="Izracunaj">
                     <input type="submit" value="Izračunaj" />
+                </form>
+                <form action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {{ resizeform }}
+                    <input type="hidden" name="action" value="Resize">
+                    <input type="submit" value="Resize" />
                 </form>
             </ul>
         </ul>
