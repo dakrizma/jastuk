@@ -1,11 +1,8 @@
 # # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, render_to_response, render
-from django.contrib.auth.decorators import login_required
-from django.core.context_processors import csrf
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.forms import ModelForm
 from jastuk.settings import MEDIA_URL, MEDIA_ROOT
 from galerija.models import *
 from galerija.forms import *
@@ -73,20 +70,20 @@ def image(request, pk):
 				pic = Image.open(join(MEDIA_ROOT, slika.image.name))
 				if pic.mode not in ("L", "RGB"):
 					pic = pic.convert("RGB")
-				aspect_ratio = sirina / float(visina)
-				large_size = (slika.width, slika.height)
-				new_height = int(large_size[0] / aspect_ratio)
-				if new_height < slika.height:
-				    final_width = large_size[0]
-				    final_height = new_height
+
+				aspect_ratio = slika.width / float(slika.height)
+				if aspect_ratio < 1:
+					aspect_ratio = 1/aspect_ratio
+				if (slika.width / sirina < slika.height / visina):
+					final_height = visina
+					final_width = int(visina * aspect_ratio)
 				else:
-				    final_width = int(aspect_ratio * large_size[1])
-				    final_height = large_size[1]
+					final_width = sirina
+					final_height = int(sirina / aspect_ratio)
 
 				imaged = pic.resize((final_width, final_height), Image.ANTIALIAS)
-
 				imaged.show()
-				imaged.save(join(MEDIA_ROOT, "images/slikica.jpg"), quality=90)
+				imaged.save(join(MEDIA_ROOT, "images/slikica.jpg"))
 
 				resizeform = ResizeForm()
 				ocjeneform = OcjeneForm()

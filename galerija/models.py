@@ -2,12 +2,11 @@
 
 import os
 from django.db import models
-from PIL import Image as PImage
+from PIL import Image
 from jastuk.settings import MEDIA_ROOT
 from django.core.files import File
-from os.path import join as pjoin
+from os.path import join
 from tempfile import NamedTemporaryFile
-from string import join
 
 class Slika(models.Model):
 	name = models.CharField(max_length=60, blank=True, null=True)
@@ -19,11 +18,11 @@ class Slika(models.Model):
 
 	def save(self, *args, **kwargs):
 		super(Slika, self).save(*args, **kwargs)
-		im = PImage.open(pjoin(MEDIA_ROOT, self.image.name))
+		im = Image.open(join(MEDIA_ROOT, self.image.name))
 		self.width, self.height = im.size
 
 		fn, ext = os.path.splitext(self.image.name)
-		im.thumbnail((120,120), PImage.ANTIALIAS)
+		im.thumbnail((120,120), Image.ANTIALIAS)
 		thumb_fn = fn + "-thumb" + ext
 		tf = NamedTemporaryFile()
 		im.save(tf.name, "JPEG")
@@ -34,6 +33,9 @@ class Slika(models.Model):
 
 	def __str__(self):
 		return self.image.name
+
+	class Meta:
+		verbose_name_plural = 'slike'
 
 ocjene = [(i, i) for i in range(6)]
 

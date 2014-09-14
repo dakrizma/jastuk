@@ -11,7 +11,7 @@ class OcjeneForm(ModelForm):
 		model = Ocjene
 		labels = {
 			'komentar': _(u'Komentar'),
-			'ocjena': _('Ocjena slike'),
+			'ocjena': _(u'Ocjena slike'),
 			}
 		exclude = ('slika',)
 
@@ -30,5 +30,5 @@ class SortForm(forms.Form):
 	sort = forms.ChoiceField(choices=izbor)
 
 class ResizeForm(forms.Form):
-	visina = forms.IntegerField(label=u'Visina', min_value=1)
 	sirina = forms.IntegerField(label=u'Širina', min_value=1)
+	visina = forms.IntegerField(label=u'Visina', min_value=1)
