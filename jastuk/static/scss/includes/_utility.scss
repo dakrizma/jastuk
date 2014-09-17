@@ -1,0 +1,89 @@
+/* ==========================================================================
+   Vars
+   ========================================================================== */
+
+// Colors
+$brand-color:#2980b9; //blue
+
+/* ==========================================================================
+   Classes
+   ========================================================================== */
+
+// Helper classes
+.ir {
+    background-color: transparent;
+    border: 0;
+    overflow: hidden;
+    *text-indent: -9999px;
+}
+.ir:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 150%;
+}
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+.invisible {
+    visibility: hidden;
+}
+.clearfix:before, .clearfix:after {
+    content: " ";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+.clearfix {
+    *zoom: 1;
+}
+.block {
+    display: block;
+}
+.inline-block {
+    display: inline-block;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+.uppercase {
+    text-transform: uppercase;
+}
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* hides the spin-button for firefox */
+input[type=number] {
+    -moz-appearance:textfield;
+}
+/* hides the spin-button for chrome*/
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
