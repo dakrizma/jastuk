@@ -11,18 +11,20 @@
                 <div class="title">{{ slika.name }}, Ocjena: {{ slika.ocjena }}</div>
                 <br />
                 Komentari:
+                <span class="demo">
                 {% for ocjena in ocjene %}
                     <div>{{ ocjena.komentar }}</div>
                 {% endfor %}
+                </span>
                 <br />
                 Zadnje ocjene:
                 {% for zadnji in zadnje %}
                     <div>{{ zadnji.ocjena }}</div>
                 {% endfor %}
-                <form action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <form class="js_ajax_form" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
                     {{ ocjeneform }}
                     <input type="hidden" name="action" value="Izracunaj">
-                    <input type="submit" value="Izračunaj" />
+                    <input class="js_ajax_call" type="submit" value="Izračunaj" />
                 </form>
                 <form action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
                     {{ resizeform }}
@@ -34,4 +36,38 @@
 
     </div>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+    $( document ).ready(function() {
+
+        $('.js_ajax_call').on('click', function(evt) {
+
+            evt.preventDefault();
+
+            var  form = $('.js_ajax_form'),
+                data = form.serialize();
+
+            console.log(data);
+
+            $.ajax({
+                url: "{% url 'ajax' %}",
+                data: data,
+                success: function (data) {
+                    console.log(data);
+
+                    $('.demo').html(data);
+
+
+                },
+                error: function (textStatus, errorThrown) {
+                    console.log(textStatus.responseText);
+                }
+            });
+
+        });
+        
+    });
+
+</script>
 {% endblock %}

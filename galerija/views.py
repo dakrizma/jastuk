@@ -1,6 +1,6 @@
 # # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from jastuk.settings import MEDIA_URL, MEDIA_ROOT
@@ -9,6 +9,7 @@ from galerija.forms import *
 from django.core.urlresolvers import reverse
 from PIL import Image
 from os.path import join
+
 
 
 def main(request):
@@ -60,7 +61,7 @@ def image(request, pk):
 				izracun(ocjene, slika)
 				ocjeneform = OcjeneForm()
 				resizeform = ResizeForm()
-				return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'backurl': request.META["HTTP_REFERER"], 'media_url': MEDIA_URL, 'ocjeneform': ocjeneform, 'resizeform': resizeform})
+				return render(request, 'galerija/ajax.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene})
 		if request.POST['action'] == 'Resize':
 			resizeform = ResizeForm(request.POST)
 			if resizeform.is_valid():
@@ -105,3 +106,6 @@ def izracun(ocjena, slika):
 	if suma != 0:
 		slika.ocjena = suma / brojac
 		slika.save()
+
+def ajax(request):
+	return HttpResponse()

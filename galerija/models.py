@@ -9,7 +9,7 @@ from os.path import join
 from tempfile import NamedTemporaryFile
 
 class Slika(models.Model):
-	name = models.CharField(max_length=60, blank=True, null=True)
+	name = models.TextField(max_length=300, blank=True, null=True)
 	image = models.FileField(upload_to="images/")
 	width = models.IntegerField(blank=True, null=True)
 	height = models.IntegerField(blank=True, null=True)
@@ -22,7 +22,7 @@ class Slika(models.Model):
 		self.width, self.height = im.size
 
 		fn, ext = os.path.splitext(self.image.name)
-		im.thumbnail((120,120), Image.ANTIALIAS)
+		im.thumbnail((300,200), Image.ANTIALIAS)
 		thumb_fn = fn + "-thumb" + ext
 		tf = NamedTemporaryFile()
 		im.save(tf.name, "JPEG")
