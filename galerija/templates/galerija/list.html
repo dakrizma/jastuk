@@ -1,0 +1,41 @@
+{% extends "pbase.html" %}
+{% block content %}
+	<div class="main">
+
+        <form action="{% url 'main' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{uploadform}}
+            <input type="hidden" name="action" value="Upload">
+            <input type="submit" value="Upload" />
+        </form>
+        {{ prm }}
+        <br />
+        <form action="{% url 'main' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{applyform}}
+            <input type="hidden" name="action" value="Apply">
+            <input type="submit" value="Apply" />
+        </form>
+		<ul>
+			{% for slik in slike %}
+				<a href="{% url 'image' slik.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slik.thumbnail.name }}" /></a>
+				<div class="title">{{ slik.name }} ({{ slik.ocjena }})</div>
+			{% endfor %}
+		</ul>
+		{% if slike.object_list and slike.paginator.num_pages > 1 %}
+		<div class="pagination">
+			<span class="step-links">
+				{% if slike.has_previous %}
+					<a href= "?page={{ slike.previous_page_number }}">previous &lt;&lt; </a>
+				{% endif %}
+
+				<span class="current">
+					&nbsp;Page {{ slike.number }} of {{ slike.paginator.num_pages }}
+				</span>
+
+				{% if slike.has_next %}
+					<a href="?page={{ slike.next_page_number }}"> &gt;&gt; next</a>
+				{% endif %}
+			</span>
+		</div>
+		{% endif %}
+	</div>
+{% endblock %}
