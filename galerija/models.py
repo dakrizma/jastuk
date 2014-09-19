@@ -11,7 +11,7 @@ from cStringIO import StringIO
 from django.core.files.base import ContentFile
 
 class Slika(models.Model):
-	name = models.CharField(max_length=60, blank=True, null=True)
+	name = models.TextField(max_length=300, blank=True, null=True)
 	image = models.FileField(upload_to="images/")
 	width = models.IntegerField(blank=True, null=True)
 	height = models.IntegerField(blank=True, null=True)
@@ -24,19 +24,15 @@ class Slika(models.Model):
 		self.width, self.height = im.size
 
 		fn, ext = os.path.splitext(self.image.name)
-		im.thumbnail((320,180), Image.ANTIALIAS)
 		thumb_fn = fn + "-thumb" + ext
-		# tf = NamedTemporaryFile()
-		# im.save(thumb_fn)
-		 # ImageOps.fit(image, size, method, bleed, centering)
+		# if not os.path.isfile(thumb_fn):
+		im = ImageOps.fit(im, (320,180), Image.ANTIALIAS)
 		temp_thumb = StringIO()
 		im.save(temp_thumb, "JPEG")
 		temp_thumb.seek(0)
 
 		self.thumbnail.save(thumb_fn, ContentFile(temp_thumb.read()), save=False)
 		temp_thumb.close()
-		# self.thumbnail.save(thumb_fn, File(open(tf.name)), save=False)
-		# tf.close()
 
 		super(Slika, self).save(*args, **kwargs)
 

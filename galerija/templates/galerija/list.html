@@ -16,7 +16,7 @@
         </form>
 		<ul>
 			{% for slik in slike %}
-				<a href="{% url 'image' slik.pk %}"><img border="0" alt="" src="{{ media_url }}{{ slik.thumbnail.name }}" /></a>
+				<a href="{% url 'image' slik.pk %}"><img style="border:1px solid black" alt="" src="{{ media_url }}{{ slik.thumbnail.name }}" /></a>
 				<div class="title">{{ slik.name }} ({{ slik.ocjena }})</div>
 			{% endfor %}
 		</ul>

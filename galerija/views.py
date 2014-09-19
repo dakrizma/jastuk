@@ -68,23 +68,10 @@ def image(request, pk):
 				sirina = int(resizeform.cleaned_data['sirina'])
 				visina = int(resizeform.cleaned_data['visina'])
 
-				pic = Image.open(join(MEDIA_ROOT, slika.image.name))
-				if pic.mode not in ("L", "RGB"):
-					pic = pic.convert("RGB")
-
-				aspect_ratio = slika.width / float(slika.height)
-				if aspect_ratio < 1:
-					aspect_ratio = 1/aspect_ratio
-				if (slika.width / sirina < slika.height / visina):
-					final_height = visina
-					final_width = int(visina * aspect_ratio)
-				else:
-					final_width = sirina
-					final_height = int(sirina / aspect_ratio)
-
-				imaged = pic.resize((final_width, final_height), Image.ANTIALIAS)
-				imaged.show()
-				imaged.save(join(MEDIA_ROOT, "images/slikica.jpg"))
+				im = Image.open(join(MEDIA_ROOT, slika.image.name))
+				im = ImageOps.fit(im, (320,180), Image.ANTIALIAS)
+				im.show()
+				im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
 
 				resizeform = ResizeForm()
 				ocjeneform = OcjeneForm()
