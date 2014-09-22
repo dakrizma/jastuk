@@ -1,37 +1,110 @@
-{% extends "pbase.html" %}
+{% extends "master.html" %}
+
+{% block nav-global %}
+<div class="main_nav">
+    <div class="container">
+        <div class="grid-12">               
+            
+            <a class="main_nav__link" href="{% url 'main' %}">&lt; Povratak na fotografije</a>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block content %}
-    <div class="main">
 
-        <a href="{{ backurl }}">&lt;&lt; back</a>
-        <ul>
-            <ul>
-                <img style="border:1px solid black" alt="" src="{{ media_url }}{{ slika.image.name }}" width="450" />
-                <br />
-                <div class="title">{{ slika.name }}, Ocjena: {{ slika.ocjena }}</div>
-                <br />
-                Komentari:
-                {% for ocjena in ocjene %}
-                    <div>{{ ocjena.komentar }}</div>
-                {% endfor %}
-                <br />
-                Zadnje ocjene:
+    <div class="container mt_20">        
+        <div class="grid-6 grid-tablet-8 push-tablet-2 grid-mobile-12 push-mobile-0">
+            
+            <div class="solo_img">
+                <img src="{{ media_url }}{{ slika.image }}" alt="{{ slika.image }}">
+            </div>
+            <div class="solo_img_caption">
+                {{ slika.name }}, Prosječna ocjena: <strong>{{ slika.ocjena }}</strong>
+            </div>
+            <ul class="solo_ocjene">
+                <li class="first">Posljednje ocjene:</li>
                 {% for zadnji in zadnje %}
-                    <div>{{ zadnji.ocjena }}</div>
-                {% endfor %}
-                <form action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    {{ ocjeneform }}
-                    <input type="hidden" name="action" value="Izracunaj">
-                    <input type="submit" value="Izračunaj" />
-                </form>
-                <form action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    {{ resizeform }}
-                    <input type="hidden" name="action" value="Resize">
-                    <input type="submit" value="Resize" />
-                </form>
+                    <li>{{ zadnji.ocjena }}</li>
+                {% endfor %}                
             </ul>
-        </ul>
+        </div>
 
+        <div class="grid-6 grid-tablet-12 grid-mobile-12">
+
+            <h3 class="solo_heading">Komentari fotografije:</h3>
+            <ul class="solo_komentari">
+                {% for ocjena in ocjene %}
+                    <li>{{ ocjena.komentar }}</li>
+                {% endfor %}
+            </ul>
+
+        </div>
     </div>
 
+    <div class="tray_img mt_20">
+        <div class="container cf">
+            <h3>Ocjeni, komentiraj &amp; Prilagodi fotografiju:</h3>           
+        </div>
+    </div>
+
+    <div class="container">        
+        <div class="grid-4 push-2 grid-mobile-12 push-mobile-0">
+
+            <form class="rate_photo" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                {{ ocjeneform }}
+                <input type="hidden" name="action" value="Izracunaj">
+                <input class="js_ajax_call" type="submit" value="Ocjeni fotografiju" />
+            </form>
+            
+        </div>
+
+        <div class="grid-4 push-2 grid-mobile-12 push-mobile-0">
+
+            <form class="rate_photo js_ajax_form" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                {{ resizeform }}
+                <input type="hidden" name="action" value="Resize">
+                <input type="submit" value="Prilagodi fotografiju" />
+            </form>
+            
+        </div>
+    </div>
+
+    <div class="container mt_50"></div>
+
+{% comment %}
+    
+
+    <script>    
+    $(document).ready(function() {
+
+        $('.js_ajax_call').on('click', function(evt) {
+
+            evt.preventDefault();
+
+            var  form = $('.js_ajax_form'),
+                data = form.serialize();
+
+            $.ajax({
+                url: "{% url 'ajax' slika.pk %}",
+                data: data,
+                success: function (data) {
+                    console.log(data);
+
+
+                },
+                error: function (textStatus, errorThrown) {
+                    console.log(textStatus.responseText);
+                }
+            });
+
+        });
+
+    });
+    </script>
+{% endcomment %}
+
 {% endblock %}
+
+

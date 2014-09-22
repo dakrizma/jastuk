@@ -1,7 +1,4 @@
-{% for ocjena in ocjene %}
-    <div>{{ ocjena.komentar }}</div>
-{% endfor %}
-Zadnje ocjene:
-{% for zadnji in zadnje %}
-    <div>{{ zadnji.ocjena }}</div>
-{% endfor %}
+{
+	"komentari": [{% for ocjena in ocjene %}"{{ ocjena.komentar }}"{% if not forloop.last %},{% endif %}{% endfor %}],
+	"ocjene": [{% for zadnji in zadnje %}"{{ zadnji.ocjena }}"{% if not forloop.last %},{% endif %}{% endfor %}]
+}

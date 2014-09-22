@@ -25,10 +25,22 @@ class Slika(models.Model):
 
 		fn, ext = os.path.splitext(self.image.name)
 		thumb_fn = fn + "-thumb" + ext
+		if im.mode not in ('L', 'RGB'):
+			im = im.convert('RGB')
+		img_type = im.format
+		if img_type == 'PNG':
+			DJANGO_TYPE = 'image/png'
+			extension = 'png'
+		elif img_type == 'GIF':
+			DJANGO_TYPE = 'image/gif'
+			extension = 'gif'
+		else:
+			DJANGO_TYPE = 'image/jpeg'
+			extension = 'jpeg'
 		if self.ocjena == 0:
 			im = ImageOps.fit(im, (320,180), Image.ANTIALIAS)
 			temp_thumb = StringIO()
-			im.save(temp_thumb, "JPEG")
+			im.save(temp_thumb, extension)
 			temp_thumb.seek(0)
 	
 			self.thumbnail.save(thumb_fn, ContentFile(temp_thumb.read()), save=False)
@@ -46,7 +58,7 @@ ocjene = [(i, i) for i in range(6)]
 
 class Ocjene(models.Model):
 	ocjena = models.IntegerField(max_length=1, choices=ocjene)
-	komentar = models.CharField(max_length=200, blank=True, null=True)
+	komentar = models.TextField(max_length=300, blank=True, null=True)
 	slika = models.ForeignKey(Slika)
 
 	class Meta:
