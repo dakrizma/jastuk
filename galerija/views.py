@@ -92,7 +92,7 @@ def izracun(ocjena, slika):
 		i += 1
 	if suma != 0:
 		slika.ocjena = suma / brojac
-		slika.save()
+		slika.save(update_fields=['ocjena'])
 
 def ajax(request):
 	return HttpResponse()
