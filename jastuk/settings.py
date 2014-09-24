@@ -103,4 +103,4 @@ STATIC_ROOT = 'static'
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = 'http://127.0.0.1:8000/static/'
+# MEDIA_URL = '/static/'

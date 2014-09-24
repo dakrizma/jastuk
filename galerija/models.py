@@ -25,14 +25,26 @@ class Slika(models.Model):
 
 		fn, ext = os.path.splitext(self.image.name)
 		thumb_fn = fn + "-thumb" + ext
-		# if not os.path.isfile(thumb_fn):
-		im = ImageOps.fit(im, (320,180), Image.ANTIALIAS)
-		temp_thumb = StringIO()
-		im.save(temp_thumb, "JPEG")
-		temp_thumb.seek(0)
-
-		self.thumbnail.save(thumb_fn, ContentFile(temp_thumb.read()), save=False)
-		temp_thumb.close()
+		if im.mode not in ('L', 'RGB'):
+			im = im.convert('RGB')
+		img_type = im.format
+		if img_type == 'PNG':
+			DJANGO_TYPE = 'image/png'
+			extension = 'png'
+		elif img_type == 'GIF':
+			DJANGO_TYPE = 'image/gif'
+			extension = 'gif'
+		else:
+			DJANGO_TYPE = 'image/jpeg'
+			extension = 'jpeg'
+		if self.ocjena == 0:
+			im = ImageOps.fit(im, (320,180), Image.ANTIALIAS)
+			temp_thumb = StringIO()
+			im.save(temp_thumb, extension)
+			temp_thumb.seek(0)
+	
+			self.thumbnail.save(thumb_fn, ContentFile(temp_thumb.read()), save=False)
+			temp_thumb.close()
 
 		super(Slika, self).save(*args, **kwargs)
 

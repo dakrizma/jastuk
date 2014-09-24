@@ -1,0 +1,335 @@
+@import 'includes/grid-settings';// Import grid settings : This to be able to use gridle mixins, etc...
+@import 'includes/grid';
+@import "includes/normalize";
+@import "includes/mixins";
+@import "includes/utility";
+
+html {
+    font-size: 62.5%;
+    font-family: sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: url('../img/body_bg.jpg') center repeat;
+}
+
+.main_nav {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    background: #234f32;
+
+    h1 {
+        @include font-size(50);
+        @include line-height(50);
+        @include font-size(18);
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+        color: #fff;
+        text-align: center;
+        @include text-shadow(0 1px 2px rgba(0,0,0, 0.3));
+        font-weight: 400;
+    }
+
+    &__link {
+        position: relative;
+        display: inline-block;
+        @include font-size(50);
+        @include line-height(50);
+        @include font-size(16);
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+        color: #fff;
+        @include text-shadow(0 1px 2px rgba(0,0,0, 0.3));
+        font-weight: 400;
+    }
+}
+
+select, input, textarea {
+    @include border-box();
+    position: relative;
+    display: block;
+    height: 25px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    @include border-radius(3px);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    @include font-size(13);
+    color: #555;
+    text-align: left;
+}
+
+textarea {
+    margin-top: 20px;
+    max-width: 100%;
+    min-width: 100%;
+    max-height: 80px;
+    min-height: 80px;
+}
+
+input[type="file"] {
+    margin-top: 10px;
+    border: none;
+}
+
+input[type="submit"] {
+    position: relative;
+    display: block;
+    margin: 12px 0 0;
+    padding: 0;
+    width: 100%;
+    height: 40px;
+    @include line-height(40);
+    @include font-size(15);
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    @include transition(0.15s);
+    background: #5FA65F;
+    @include text-shadow(0 1px 2px rgba(0,0,0, 0.3));
+
+    &:hover {
+        color: #e1e1e1; 
+        background: #4fb14c;
+    }
+}
+
+label {
+    position: relative;
+    display: block;
+    margin: 5px 0 0;
+    width: 100%;
+    float: left;
+    text-align: left;
+    @include cf();           
+}
+
+.upload_form {
+
+    label {
+        display: none;
+    }
+}
+
+.sort_form {
+
+    label {
+        display: none;
+    }
+}
+
+.tray_img {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 40px 0 20px;
+    padding: 0;
+    background: #234f32;
+
+    h3 {
+        @include font-size(50);
+        @include line-height(50);
+        @include font-size(18);
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+        color: #fff;
+        text-align: center;
+        @include text-shadow(0 1px 2px rgba(0,0,0, 0.3));
+        font-weight: 400;
+    }
+}
+
+.figure_img {
+    position: relative;
+    display: block;
+    margin: 0 0 20px;
+    padding: 0;
+    overflow: hidden;
+    @include box-shadow(0 0 3px rgba(0,0,0, 0.25));
+
+    a {
+        position: relative;
+        display: block;
+        text-decoration: none;
+        margin: 0;
+        padding: 0;
+
+        .img_block {
+            position: relative;
+            display: block;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow: hidden;
+
+            img {
+                position: relative;
+                display: block;
+                width: 100%;
+                height: auto;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .caption {
+            position: relative;
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            background: #234f32;
+            color: #fff;
+            @include font-size(13);
+            @include line-height(18);
+            @include text-shadow(0 1px 2px rgba(0,0,0, 0.3));
+        }
+    }
+}
+
+.pagination {
+    position: relative;
+    display: block;
+    margin: 0 auto 50px;
+    padding: 0;
+    text-align: center;
+
+    &__item {
+        position: relative;
+        display: inline-block;
+        margin: 0 10px;
+        padding: 0;
+        @include font-size(18);
+        @include line-height(18);
+        text-decoration: none;
+        font-weight: 400;
+        color: #234f32;
+        @inclde transition(0.12s);
+    }
+
+    a {
+
+        &:hover {
+            color: #5FA65F;
+        }
+    }
+}
+
+.rate_photo {
+    position: relative;
+    display: block;
+    @include cf();
+    margin: 0;
+    padding: 0;
+    
+    label {
+        position: relative;
+        display: block;
+        text-align-last: auto;
+        margin: 10px 0 0;
+        color: #444;
+        padding: 0;
+        @include font-size(13);
+        @include line-height(16);
+    }
+}
+
+.solo_img {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
+
+    img {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.solo_img_caption {
+    position: relative;
+    display: block;
+    @include font-size(13);
+    @include line-height(16);
+    margin: 0;
+    padding: 10px;
+    background: #234f32;
+    text-align: center;
+    color: #fff;
+}
+
+.solo_ocjene {
+    position: relative;
+    display: block;
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+    @include cf();
+
+    li {
+        position: relative;
+        display: inline-block;
+        height: 30px;
+        width: 30px;
+        margin: 0 10px 0 0;
+        padding: 0;
+        @include font-size(13);
+        @include line-height(30);
+        background: #234f32;
+        color: #fff;
+        text-align: center;
+        @include border-radius(100%);
+        font-weight: bold;
+
+        &.first {
+            @include border-radius(0);
+            color: #234f32;
+            width: 135px;
+            background: none;
+        }
+    }
+}
+.solo_heading {
+    position: relative;
+    display: block;
+    text-align-last: auto;
+    margin: 0;
+    padding: 0;
+    @include font-size(16);
+    @include line-height(30);
+    color: #234f32;
+}
+
+.solo_komentari {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    @include cf();
+
+    li {
+        position: relative;
+        display: block;
+        margin: 0 0 15px;
+        padding: 0;
+        @include font-size(15);
+        @include line-height(22);
+        color: #444;
+    }
+}

@@ -10,8 +10,8 @@ class OcjeneForm(ModelForm):
 	class Meta:
 		model = Ocjene
 		labels = {
-			'komentar': _(u'Komentar'),
-			'ocjena': _(u'Ocjena slike'),
+			'komentar': _(u'Vaš komentar'),
+			'ocjena': _(u'Ocjena fotografije'),
 			}
 		exclude = ('slika',)
 
@@ -30,5 +30,5 @@ class SortForm(forms.Form):
 	sort = forms.ChoiceField(choices=izbor)
 
 class ResizeForm(forms.Form):
-	sirina = forms.IntegerField(label=u'Širina', min_value=1)
-	visina = forms.IntegerField(label=u'Visina', min_value=1)
+	sirina = forms.IntegerField(label=u'Maksimalna širina', min_value=1)
+	visina = forms.IntegerField(label=u'Maksimalna visina', min_value=1)
