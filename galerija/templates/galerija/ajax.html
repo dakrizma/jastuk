@@ -1,13 +1,6 @@
-<<<<<<< HEAD
 "prosjecna ocjena": <br><br>
 {{ slika.ocjena }}<br><br>
 "komentari": <br><br>
 [{% for ocjena in ocjene %}"{{ ocjena.komentar }}"{% if not forloop.last %},{% endif %}{% endfor %}],<br><br>
 "ocjene":<br><br>
 [{% for zadnji in zadnje %}"{{ zadnji.ocjena }}"{% if not forloop.last %},{% endif %}{% endfor %}]<br><br>
-=======
-{
-	"komentari": [{% for ocjena in ocjene %}"{{ ocjena.komentar }}"{% if not forloop.last %},{% endif %}{% endfor %}],
-	"ocjene": [{% for zadnji in zadnje %}"{{ zadnji.ocjena }}"{% if not forloop.last %},{% endif %}{% endfor %}]
-}
->>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae

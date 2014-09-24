@@ -60,18 +60,12 @@ def image(request, pk):
 				ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
 				zadnje = ocjene[:5]
 				izracun(ocjene, slika)
-<<<<<<< HEAD
 				data = {
 					'komentar': [ocjena.komentar for ocjena in ocjene],
 					'ocjene': [zadnji.ocjena for zadnji in zadnje],
 					'prosjek': slika.ocjena,
 					}
 				return HttpResponse(json.dumps(data), content_type="application/json")
-=======
-				ocjeneform = OcjeneForm()
-				resizeform = ResizeForm()
-				return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'resizeform': resizeform, 'ocjeneform': ocjeneform})
->>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
 		if request.POST['action'] == 'Resize':
 			resizeform = ResizeForm(request.POST)
 			if resizeform.is_valid():
@@ -101,7 +95,6 @@ def izracun(ocjena, slika):
 	if suma != 0:
 		slika.ocjena = suma / brojac
 		slika.save(update_fields=['ocjena'])
-<<<<<<< HEAD
 
 
 
@@ -139,24 +132,3 @@ def ajax(request, pk):
 		ocjeneform = OcjeneForm()
 
 	return render(request, 'galerija/image.html', {'form': ocjeneform})
-=======
-
-def ajax(request, pk):
-	# slika = Slika.objects.get(pk=pk)
-	# ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
-	# zadnje = ocjene[:5]
-	# ocjeneform = OcjeneForm(request.POST)
-	# if ocjeneform.is_valid():
-	# 	obj = ocjeneform.save(commit=False)
-	# 	obj.slika = slika
-	# 	obj.save()
-	# 	ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
-	# 	zadnje = ocjene[:5]
-	# 	izracun(ocjene, slika)
-	# 	ocjeneform = OcjeneForm()
-	# 	resizeform = ResizeForm()
-	# 	return render(request, 'galerija/ajax.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene})
-	# ocjeneform = OcjeneForm()
-	# return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'ocjeneform': ocjeneform})
-	return HttpResponse
->>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
