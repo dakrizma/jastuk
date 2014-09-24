@@ -3,8 +3,13 @@
 {% block nav-global %}
 <div class="main_nav">
     <div class="container">
+<<<<<<< HEAD
         <div class="grid-12">
 
+=======
+        <div class="grid-12">               
+            
+>>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
             <a class="main_nav__link" href="{% url 'main' %}">&lt; Povratak na fotografije</a>
 
         </div>
@@ -14,9 +19,15 @@
 
 {% block content %}
 
+<<<<<<< HEAD
     <div class="container mt_20">
         <div class="grid-6 grid-tablet-8 push-tablet-2 grid-mobile-12 push-mobile-0">
 
+=======
+    <div class="container mt_20">        
+        <div class="grid-6 grid-tablet-8 push-tablet-2 grid-mobile-12 push-mobile-0">
+            
+>>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
             <div class="solo_img">
                 <img src="{{ media_url }}{{ slika.image }}" alt="{{ slika.image }}">
             </div>
@@ -27,6 +38,7 @@
                 <li class="first">Posljednje ocjene:</li>
                 {% for zadnji in zadnje %}
                     <li>{{ zadnji.ocjena }}</li>
+<<<<<<< HEAD
                 {% endfor %}
             </ul>
         </div>
@@ -63,17 +75,66 @@
         <div class="grid-4 push-2 grid-mobile-12 push-mobile-0">
 
             <form class="rate_photo" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+=======
+                {% endfor %}                
+            </ul>
+        </div>
+
+        <div class="grid-6 grid-tablet-12 grid-mobile-12">
+
+            <h3 class="solo_heading">Komentari fotografije:</h3>
+            <ul class="solo_komentari">
+                {% for ocjena in ocjene %}
+                    <li>{{ ocjena.komentar }}</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="tray_img mt_20">
+        <div class="container cf">
+            <h3>Ocjeni, komentiraj &amp; Prilagodi fotografiju:</h3>           
+        </div>
+    </div>
+
+    <div class="container">        
+        <div class="grid-4 push-2 grid-mobile-12 push-mobile-0">
+
+            <form class="rate_photo" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+                {{ ocjeneform }}
+                <input type="hidden" name="action" value="Izracunaj">
+                <input class="js_ajax_call" type="submit" value="Ocjeni fotografiju" />
+            </form>
+            
+        </div>
+
+        <div class="grid-4 push-2 grid-mobile-12 push-mobile-0">
+
+            <form class="rate_photo js_ajax_form" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+>>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
                 {{ resizeform }}
                 <input type="hidden" name="action" value="Resize">
                 <input type="submit" value="Prilagodi fotografiju" />
             </form>
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
         </div>
     </div>
 
     <div class="container mt_50"></div>
 
+<<<<<<< HEAD
     <script>
+=======
+{% comment %}
+    
+
+    <script>    
+>>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
     $(document).ready(function() {
 
         $('.js_ajax_call').on('click', function(evt) {
@@ -88,6 +149,11 @@
                 data: data,
                 success: function (data) {
                     console.log(data);
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
                 },
                 error: function (textStatus, errorThrown) {
                     console.log(textStatus.responseText);
@@ -98,6 +164,7 @@
 
     });
     </script>
+<<<<<<< HEAD
 
 {% endblock %}
 
@@ -127,3 +194,10 @@
 
 
 {% endcomment %}
+=======
+{% endcomment %}
+
+{% endblock %}
+
+
+>>>>>>> 114dfa93df6c21a907cfea4b2c5f0216248653ae
