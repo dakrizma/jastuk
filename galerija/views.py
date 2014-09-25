@@ -99,7 +99,7 @@ def izracun(ocjena, slika):
 
 
 def ajax(request, pk):
-	if request.POST:
+	if request.method == 'POST':
 		slika = Slika.objects.get(pk=pk)
 		ocjeneform = OcjeneForm(request.POST)
 		if ocjeneform.is_valid():
