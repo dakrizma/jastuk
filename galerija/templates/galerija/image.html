@@ -15,7 +15,7 @@
 {% block content %}
 
 	<div class="container mt_20">
-		<div class="grid-6 grid-tablet-8 push-tablet-2 grid-mobile-12 push-mobile-0">
+		<div class="grid-6 grid-tablet-8 push-tablet-2 grid-mobile-12 push-mobile-0 cf">
 
 			<div class="solo_img">
 				<img src="{{ media_url }}{{ slika.image }}" alt="{{ slika.image }}">
@@ -23,8 +23,8 @@
 			<div class="solo_img_caption">
 				{{ slika.name }}, Prosječna ocjena: <strong>{{ slika.ocjena }}</strong>
 			</div>
+			<span class="solo_ocjene_label">Ocjene:</span>
 			<ul class="solo_ocjene">
-				<li class="first">Posljednje ocjene:</li>
 				{% for zadnji in zadnje %}
 					<li>{{ zadnji.ocjena }}</li>
 				{% endfor %}
@@ -34,11 +34,13 @@
 		<div class="grid-6 grid-tablet-12 grid-mobile-12">
 
 			<h3 class="solo_heading">Komentari fotografije:</h3>
-			<ul class="solo_komentari">
-				{% for ocjena in ocjene %}
-					<li>{{ ocjena.komentar }}</li>
-				{% endfor %}
-			</ul>
+			<span class="solo_komentari_wrap nano">
+				<ul class="solo_komentari nano-content">
+					{% for ocjena in ocjene %}
+						<li>{{ ocjena.komentar }}</li>
+					{% endfor %}
+				</ul>
+			</span>
 
 		</div>
 	</div>
@@ -73,59 +75,55 @@
 
 	<div class="container mt_50"></div>
 
-    <script>
-    $(document).ready(function() {
+<script>
+$(document).ready(function() {
 
-        $('.js_ajax_call').on('click', function(evt) {
+    $('.js_ajax_call').on('click', function(evt) {
 
-            evt.preventDefault();
+        evt.preventDefault();
 
-            var form = $('.js_ajax_form');
+        var form = $('.js_ajax_form');
 
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function (data) {
-                    console.log(data);
-                },
-                error: function (textStatus, errorThrown) {
-                    console.log(textStatus.responseText);
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (data) {
+
+            	/* Ocjene set */
+            	var itemsOcjene = [];
+
+                for (var i=0, len=data.ocjene.length; i < len; i++) {
+
+					itemsOcjene.push('<li>' + data.ocjene[i] + '</li>');
                 }
-            });
+                
+                $('.solo_ocjene').html(itemsOcjene.join(''));
 
+				/* Komentari set */
+				var itemsKomentari = [];
+
+				for (var i=0, len=data.komentar.length; i < len; i++) {
+
+					itemsKomentari.push('<li>' + data.komentar[i] + '</li>');
+				}
+
+				$('.solo_komentari').html(itemsKomentari.join(''));
+
+				/* Prosjek set */
+				$('.solo_img_caption > strong').html( data.prosjek.toFixed(2) );
+
+            },
+            error: function (textStatus, errorThrown) {
+                console.log(textStatus.responseText);
+            }
         });
 
     });
-    </script>
 
-{% comment %}
+});
+</script>
 
-    <script>
-    $(document).ready(function() {
 
-        $('.js_ajax_call').on('click', function(evt) {
-
-            evt.preventDefault();
-
-            var  form = $('.js_ajax_form'),
-                data = form.serialize();
-
-            $.ajax({
-                url: "{% url 'ajax' slika.pk %}",
-                data: data,
-                success: function (data) {
-                    console.log(data);
-                },
-                error: function (textStatus, errorThrown) {
-                    console.log(textStatus.responseText);
-                }
-            });
-
-        });
-
-    });
-    </script>
-{% endcomment %}
 
 {% endblock %}
