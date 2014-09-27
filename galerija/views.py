@@ -50,34 +50,34 @@ def image(request, pk):
 	slika = Slika.objects.get(pk=pk)
 	ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
 	zadnje = ocjene[:5]
-	if request.method == 'POST':
-		if request.POST['action'] == 'Izracunaj':
-			ocjeneform = OcjeneForm(request.POST)
-			if ocjeneform.is_valid():
-				obj = ocjeneform.save(commit=False)
-				obj.slika = slika
-				obj.save()
-				ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
-				zadnje = ocjene[:5]
-				izracun(ocjene, slika)
-				data = {
-					'komentar': [ocjena.komentar for ocjena in ocjene],
-					'ocjene': [zadnji.ocjena for zadnji in zadnje],
-					'prosjek': slika.ocjena,
-					}
-				return HttpResponse(json.dumps(data), content_type="application/json")
-		if request.POST['action'] == 'Resize':
-			resizeform = ResizeForm(request.POST)
-			if resizeform.is_valid():
-				sirina = int(resizeform.cleaned_data['sirina'])
-				visina = int(resizeform.cleaned_data['visina'])
-				im = Image.open(join(MEDIA_ROOT, slika.image.name))
-				im = ImageOps.fit(im, (320,180), Image.ANTIALIAS)
-				im.show()
-				im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
-				resizeform = ResizeForm()
-				ocjeneform = OcjeneForm()
-				return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'resizeform': resizeform, 'ocjeneform': ocjeneform})
+	# if request.method == 'POST':
+	# 	if request.POST['action'] == 'Izracunaj':
+	# 		ocjeneform = OcjeneForm(request.POST)
+	# 		if ocjeneform.is_valid():
+	# 			obj = ocjeneform.save(commit=False)
+	# 			obj.slika = slika
+	# 			obj.save()
+	# 			ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
+	# 			zadnje = ocjene[:5]
+	# 			izracun(ocjene, slika)
+	# 			data = {
+	# 				'komentar': [ocjena.komentar for ocjena in ocjene],
+	# 				'ocjene': [zadnji.ocjena for zadnji in zadnje],
+	# 				'prosjek': slika.ocjena,
+	# 				}
+	# 			return HttpResponse(json.dumps(data), content_type="application/json")
+	# 	if request.POST['action'] == 'Resize':
+	# 		resizeform = ResizeForm(request.POST)
+	# 		if resizeform.is_valid():
+	# 			sirina = int(resizeform.cleaned_data['sirina'])
+	# 			visina = int(resizeform.cleaned_data['visina'])
+	# 			im = Image.open(join(MEDIA_ROOT, slika.image.name))
+	# 			im = ImageOps.fit(im, (sirina,visina), Image.ANTIALIAS)
+	# 			im.show()
+	# 			im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
+	# 			resizeform = ResizeForm()
+	# 			ocjeneform = OcjeneForm()
+	# 			return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'resizeform': resizeform, 'ocjeneform': ocjeneform})
 	ocjeneform = OcjeneForm()
 	resizeform = ResizeForm()
 	return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'ocjeneform': ocjeneform, 'resizeform': resizeform})
@@ -114,6 +114,7 @@ def ajax(request, pk):
 				'ocjene': [zadnji.ocjena for zadnji in zadnje],
 				'prosjek': slika.ocjena,
 				}
+			ocjeneform = OcjeneForm()
 			if request.is_ajax():
 				return HttpResponse(json.dumps(data), content_type="application/json")
 			else:
@@ -130,5 +131,34 @@ def ajax(request, pk):
 				return HttpResponse('Greska2!')
 	else:
 		ocjeneform = OcjeneForm()
-
 	return render(request, 'galerija/image.html', {'form': ocjeneform})
+
+def ajax2(request, pk):
+	if request.method == 'POST':
+		slika = Slika.objects.get(pk=pk)
+		resizeform = ResizeForm(request.POST)
+		if resizeform.is_valid():
+			sirina = int(resizeform.cleaned_data['sirina'])
+			visina = int(resizeform.cleaned_data['visina'])
+			im = Image.open(join(MEDIA_ROOT, slika.image.name))
+			im = ImageOps.fit(im, (sirina,visina), Image.ANTIALIAS)
+			# im.show()
+			im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
+
+			if request.is_ajax():
+				return HttpResponse(im)
+			else:
+				return HttpResponse('Greska!')
+		else:
+			if request.is_ajax():
+				errors_dict = {}
+				if resizeform.errors:
+					for error in resizeform.errors:
+						e = resizeform.errors[error]
+						errors_dict[error] = unicode(e)
+				return HttpResponseBadRequest(json.dumps(errors_dict))
+			else:
+				return HttpResponse('Greska2!')
+	else:
+		resizeform = ResizeForm()
+	return render(request, 'galerija/image.html', {'form': resizeform})

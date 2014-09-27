@@ -113,6 +113,8 @@ $(document).ready(function() {
 				/* Prosjek set */
 				$('.solo_img_caption > strong').html( data.prosjek.toFixed(2) );
 
+                $('.js_ajax_form')[0].reset();
+
             },
             error: function (textStatus, errorThrown) {
                 console.log(textStatus.responseText);

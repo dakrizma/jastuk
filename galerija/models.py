@@ -58,7 +58,7 @@ ocjene = [(i, i) for i in range(6)]
 
 class Ocjene(models.Model):
 	ocjena = models.IntegerField(max_length=1, choices=ocjene)
-	komentar = models.CharField(max_length=200, blank=True, null=True)
+	komentar = models.TextField(max_length=300, blank=True, null=True)
 	slika = models.ForeignKey(Slika)
 
 	class Meta:
