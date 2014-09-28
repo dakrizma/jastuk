@@ -50,7 +50,7 @@ def image(request, pk):
 	slika = Slika.objects.get(pk=pk)
 	ocjene = Ocjene.objects.filter(slika=slika).order_by('-id')
 	zadnje = ocjene[:5]
-	# if request.method == 'POST':
+	if request.method == 'POST':
 	# 	if request.POST['action'] == 'Izracunaj':
 	# 		ocjeneform = OcjeneForm(request.POST)
 	# 		if ocjeneform.is_valid():
@@ -66,18 +66,20 @@ def image(request, pk):
 	# 				'prosjek': slika.ocjena,
 	# 				}
 	# 			return HttpResponse(json.dumps(data), content_type="application/json")
-	# 	if request.POST['action'] == 'Resize':
-	# 		resizeform = ResizeForm(request.POST)
-	# 		if resizeform.is_valid():
-	# 			sirina = int(resizeform.cleaned_data['sirina'])
-	# 			visina = int(resizeform.cleaned_data['visina'])
-	# 			im = Image.open(join(MEDIA_ROOT, slika.image.name))
-	# 			im = ImageOps.fit(im, (sirina,visina), Image.ANTIALIAS)
-	# 			im.show()
-	# 			im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
-	# 			resizeform = ResizeForm()
-	# 			ocjeneform = OcjeneForm()
-	# 			return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'resizeform': resizeform, 'ocjeneform': ocjeneform})
+		if request.POST['action'] == 'Resize':
+			resizeform = ResizeForm(request.POST)
+			if resizeform.is_valid():
+				sirina = int(resizeform.cleaned_data['sirina'])
+				visina = int(resizeform.cleaned_data['visina'])
+				im = Image.open(join(MEDIA_ROOT, slika.image.name))
+				im = ImageOps.fit(im, (sirina,visina), Image.ANTIALIAS)
+				im.show()
+				if im.mode not in ('L', 'RGB'):
+					im = im.convert('RGB')
+				im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
+				resizeform = ResizeForm()
+				ocjeneform = OcjeneForm()
+				return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'resizeform': resizeform, 'ocjeneform': ocjeneform})
 	ocjeneform = OcjeneForm()
 	resizeform = ResizeForm()
 	return render(request, 'galerija/image.html', {'slika': slika, 'zadnje': zadnje, 'ocjene': ocjene, 'media_url': STATIC_URL, 'ocjeneform': ocjeneform, 'resizeform': resizeform})
@@ -143,6 +145,8 @@ def ajax2(request, pk):
 			im = Image.open(join(MEDIA_ROOT, slika.image.name))
 			im = ImageOps.fit(im, (sirina,visina), Image.ANTIALIAS)
 			# im.show()
+			if im.mode not in ('L', 'RGB'):
+				im = im.convert('RGB')
 			im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
 
 			if request.is_ajax():
