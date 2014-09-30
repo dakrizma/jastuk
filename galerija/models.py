@@ -4,9 +4,7 @@ import os
 from django.db import models
 from PIL import Image, ImageOps
 from jastuk.settings import MEDIA_ROOT
-from django.core.files import File
 from os.path import join
-from tempfile import NamedTemporaryFile
 from cStringIO import StringIO
 from django.core.files.base import ContentFile
 
