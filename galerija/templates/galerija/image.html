@@ -54,20 +54,24 @@
 	<div class="container">
 		<div class="grid-4 push-2 grid-mobile-12 push-mobile-0">
 
-			<form class="rate_photo js_ajax_form" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+			<form class="rate_photo js_ajax_form" action="{% url 'ajax' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
 				{{ ocjeneform }}
 				<input type="hidden" name="action" value="Izracunaj">
-				<input class="js_ajax_call" type="submit" value="Ocjeni fotografiju" />
+				<input class="js_ajax_comment_call" type="submit" value="Ocjeni fotografiju" />
 			</form>
 
 		</div>
 
 		<div class="grid-4 push-2 grid-mobile-12 push-mobile-0">
 
-			<form class="rate_photo" action="{% url 'image' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+			<span class="resize_info">
+				<strong>UPUTA:</strong> Fotografija se skalira na zadanu širinu i visinu, ako je zadani omjer fotografije drugačiji od originalnog omjera fotografija će biti ogdrezana od sredine prema van. 
+			</span>
+
+			<form class="rate_photo js_ajax_resize_form" action="{% url 'ajax2' slika.pk %}" method="post" enctype="multipart/form-data">{% csrf_token %}
 				{{ resizeform }}
 				<input type="hidden" name="action" value="Resize">
-				<input type="submit" value="Prilagodi fotografiju" />
+				<input class="js_ajax_resize_call" type="submit" value="Prilagodi fotografiju" />
 			</form>
 
 		</div>
@@ -78,7 +82,7 @@
 <script>
 $(document).ready(function() {
 
-    $('.js_ajax_call').on('click', function(evt) {
+    $('.js_ajax_comment_call').on('click', function(evt) {
 
         evt.preventDefault();
 
@@ -114,6 +118,37 @@ $(document).ready(function() {
 				$('.solo_img_caption > strong').html( data.prosjek.toFixed(2) );
 
                 $('.js_ajax_form')[0].reset();
+
+            },
+            error: function (textStatus, errorThrown) {
+                console.log(textStatus.responseText);
+            }
+        });
+
+    });
+
+    $('.js_ajax_resize_call').on('click', function(evt) {
+
+        evt.preventDefault();
+
+        var form = $('.js_ajax_resize_form'),
+        	data = form.serialize(),
+        	visina = form.find('#id_visina').val(),
+        	sirina = form.find('#id_sirina').val(),
+        	visinaEkrana = $(window).height(),
+        	sirinaEkrana = $(window).width(),
+        	cordX = (sirinaEkrana - sirina)/2,
+        	cordY = (visinaEkrana - visina)/2;
+
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: data,
+            success: function (data) {
+
+            	console.log(data);            
+                $('.js_ajax_resize_form')[0].reset();
+                window.open('{{ STATIC_URL }}' + data,'_blank','width=' + sirina + ',height=' + visina + ',top=' + cordY + ', left=' + cordX); 
 
             },
             error: function (textStatus, errorThrown) {

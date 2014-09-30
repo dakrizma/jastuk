@@ -116,7 +116,6 @@ def ajax(request, pk):
 				'ocjene': [zadnji.ocjena for zadnji in zadnje],
 				'prosjek': slika.ocjena,
 				}
-			ocjeneform = OcjeneForm()
 			if request.is_ajax():
 				return HttpResponse(json.dumps(data), content_type="application/json")
 			else:
@@ -150,7 +149,7 @@ def ajax2(request, pk):
 			im.save(join(MEDIA_ROOT, "images/slikica.jpg"))
 
 			if request.is_ajax():
-				return HttpResponse(im)
+				return HttpResponse("images/slikica.jpg")
 			else:
 				return HttpResponse('Greska!')
 		else:
